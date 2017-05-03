@@ -1,3 +1,4 @@
+# %load main.py
 import argparse
 import time
 import math
@@ -99,8 +100,8 @@ def repackage_hidden(h):
 
 
 def get_batch(source, i, evaluation=False):
-    #seq_len = min(args.bptt, len(source) - 1 - i)
-    seq_len = 2*args.winSize+1
+    seq_len = min(args.bptt, len(source) - 1 - i)
+    #seq_len = 2*args.winSize+1
     data = Variable(source[i:i+seq_len], volatile=evaluation)
     #target = Variable(source[i+1:i+1+seq_len].view(-1))
     target = Variable(source[i+args.winSize].view(-1))
