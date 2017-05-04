@@ -27,6 +27,10 @@ class Corpus(object):
         """Tokenizes a text file."""
         assert os.path.exists(path)
         # Add words to the dictionary
+        # Add holdout mask token
+        self.dictionary.add_word('<MASK>')
+        #print('check <MASK>')
+        #print(self.dictionary.idx2word)
         with open(path, 'r') as f:
             tokens = 0
             for line in f:

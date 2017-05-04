@@ -49,14 +49,14 @@ class RNNModel(nn.Module):
         output = self.drop(output)[-1]
         decoded = self.decoder(output.view(output.size(0), output.size(1)))
 #         print('output')
+#         print(output.data.size())
 #         print('-'*89)
-#         print(output)
 #         print('decoded')
+#         print(decoded.data.size())
 #         print('-'*89)
-#         print(decoded)
 #         print('hidden')
-#         print('-'*89)
 #         print(hidden)
+#         print('-'*89)
         #return decoded.view(output.size(0), output.size(1), decoded.size(1)), hidden
         return decoded, hidden
 

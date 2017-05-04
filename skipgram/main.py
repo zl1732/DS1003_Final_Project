@@ -100,8 +100,8 @@ def repackage_hidden(h):
 
 
 def get_batch(source, i, evaluation=False):
-    seq_len = min(args.bptt, len(source) - 1 - i)
-    #seq_len = 2*args.winSize+1
+    #seq_len = min(args.bptt, len(source) - 1 - i)
+    seq_len = 2*args.winSize+1
     data = Variable(source[i:i+seq_len], volatile=evaluation)
     #target = Variable(source[i+1:i+1+seq_len].view(-1))
     target = Variable(source[i+args.winSize].view(-1))
@@ -117,8 +117,9 @@ def evaluate(data_source):
     for i in range(0, data_source.size(0) - 1, args.bptt):
         data, targets = get_batch(data_source, i, evaluation=True)
         output, hidden = model(data, hidden)
-        output_flat = output.view(-1, ntokens)
-        total_loss += len(data) * criterion(output_flat, targets).data
+        #output_flat = output.view(-1, ntokens)
+        #total_loss += len(data) * criterion(output_flat, targets).data
+        total_loss += len(data) * criterion(output, targets).data
         hidden = repackage_hidden(hidden)
     return total_loss[0] / len(data_source)
 
@@ -130,8 +131,11 @@ def train():
     start_time = time.time()
     ntokens = len(corpus.dictionary)
     hidden = model.init_hidden(args.batch_size)
+    print(train_data.size(0))
     for batch, i in enumerate(range(0, train_data.size(0) - 1, args.bptt)):
         data, targets = get_batch(train_data, i)
+        if batch ==(train_data.size(0)//args.bptt-1):
+            break
         # Starting each batch, we detach the hidden state from how it was previously produced.
         # If we didn't, the model would try backpropagating all the way to start of the dataset.
         hidden = repackage_hidden(hidden)
@@ -187,13 +191,13 @@ except KeyboardInterrupt:
     print('-' * 89)
     print('Exiting from training early')
 
-# # Load the best saved model.
-# with open(args.save, 'rb') as f:
-#     model = torch.load(f)
+# Load the best saved model.
+with open(args.save, 'rb') as f:
+    model = torch.load(f)
 
-# # Run on test data.
-# test_loss = evaluate(test_data)
-# print('=' * 89)
-# print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
-#     test_loss, math.exp(test_loss)))
-# print('=' * 89)
+# Run on test data.
+test_loss = evaluate(test_data)
+print('=' * 89)
+print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
+    test_loss, math.exp(test_loss)))
+print('=' * 89)
