@@ -1,4 +1,3 @@
-# %load main.py
 import argparse
 import time
 import math
@@ -106,6 +105,8 @@ def get_batch(source, i, evaluation=False):
     target = Variable(torch.LongTensor(args.batch_size))
     target.data.copy_(data.data[args.winSize])
     data.data[args.winSize]=0
+    if args.cuda:
+        target = target.cuda()
     return data, target
 
 
@@ -115,7 +116,11 @@ def evaluate(data_source):
     total_loss = 0
     ntokens = len(corpus.dictionary)
     hidden = model.init_hidden(eval_batch_size)
+    print(data_source.size())
     for i in range(0, data_source.size(0) - 1, args.bptt):
+        if i+args.bptt>data_source.size(0):
+            print('break!')
+            break
         data, targets = get_batch(data_source, i, evaluation=True)
         output, hidden = model(data, hidden)
         #output_flat = output.view(-1, ntokens)
