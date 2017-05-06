@@ -117,10 +117,7 @@ def evaluate(data_source):
     ntokens = len(corpus.dictionary)
     hidden = model.init_hidden(eval_batch_size)
     print(data_source.size())
-    for i in range(0, data_source.size(0) - 1, args.bptt):
-        if i+args.bptt>data_source.size(0):
-            print('break!')
-            break
+    for i in range(data_source.size(0)-args.winSize):
         data, targets = get_batch(data_source, i, evaluation=True)
         output, hidden = model(data, hidden)
         #output_flat = output.view(-1, ntokens)
@@ -162,7 +159,7 @@ def train():
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:02.2f} | ms/batch {:5.2f} | '
                     'loss {:5.2f} | ppl {:8.2f}'.format(
-                epoch, batch, len(train_data) // args.bptt, lr,
+                epoch, batch, (train_data.size(0)-args.winSize), lr,
                 elapsed * 1000 / args.log_interval, cur_loss, math.exp(cur_loss)))
             total_loss = 0
             start_time = time.time()
