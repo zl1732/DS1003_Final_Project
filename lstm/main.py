@@ -118,7 +118,10 @@ def evaluate(data_source):
     hidden = model.init_hidden(eval_batch_size)
     print(data_source.size())
     for i in range(data_source.size(0)-args.winSize):
-        data, targets = get_batch(data_source, i, evaluation=True)
+        try:
+            data, targets = get_batch(data_source, i, evaluation=True)
+        except:
+            print(i)
         output, hidden = model(data, hidden)
         #output_flat = output.view(-1, ntokens)
         #total_loss += len(data) * criterion(output_flat, targets).data
