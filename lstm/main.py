@@ -155,6 +155,7 @@ def train():
             p.data.add_(-lr, p.grad.data)
         total_loss += loss.data
         if batch % args.log_interval == 0 and batch > 0:
+            print(data)
             cur_loss = total_loss[0] / args.log_interval
             elapsed = time.time() - start_time
             print('| epoch {:3d} | {:5d}/{:5d} batches | lr {:02.2f} | ms/batch {:5.2f} | '
