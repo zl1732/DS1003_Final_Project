@@ -102,7 +102,7 @@ def get_batch(source, i, evaluation=False):
     #seq_len = min(args.bptt, len(source) - 1 - i)
     seq_len = 2*args.winSize+1
     data = Variable(source[i:i+seq_len], volatile=evaluation)
-    target = Variable(torch.LongTensor(args.batch_size))
+    target = Variable(torch.LongTensor(data.size(0)))
     target.data.copy_(data.data[args.winSize])
     data.data[args.winSize]=0
     if args.cuda:
