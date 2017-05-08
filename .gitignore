@@ -4,3 +4,7 @@
 *.pyc
 
 *.pt
+
+metastore_db/*
+
+derby.log
